@@ -1,0 +1,29 @@
+/* You can add global styles to this file, and also import other style files*/
+@import "bootstrap/dist/css/bootstrap.css"; 
+/* @import "bootstrap-icons/font/bootstrap-icons.css"; */
+
+div.card-header {
+ font-size: large;
+}
+
+div.card {
+  margin-top: 10px
+}
+
+.table {
+  margin-top: 10px
+}
+
+a {
+  text-decoration: none; 
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: url('assets/Path-of-Exile-2-1.jpg') center center fixed;
+  background-size: cover;
+  height: 100vh;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

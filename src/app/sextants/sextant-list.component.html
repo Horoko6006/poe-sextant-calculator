@@ -1,0 +1,172 @@
+<div class="container">
+  <div class="card card-main">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-7">
+          <div style="height: 800px; overflow-y: auto; cursor: grab">
+            <table
+              id="allId"
+              class="table"
+              *ngIf="sextantModsInitial() as sextantModsCalculated"
+              cdkDropList
+              [cdkDropListData]="sextantModsCalculated"
+              cdkDropListConnectedTo="blockedId"
+              (cdkDropListDropped)="onDrop($event)"
+              [cdkDropListEnterPredicate]="noReturnPredicate"
+              (cdkDropListExited)="onExited($event)"
+              (cdkDropListEntered)="onEntered($event)"
+            >
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Value</th>
+                  <th>Name</th>
+                  <th>Weight</th>
+                  <th>Prob</th>
+                  <th>Weighted Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let sextantMod of sextantModsCalculated; let i = index"
+                  [ngClass]="{
+                    'highlighted-row': isHighlightedRow(sextantMod.chaos)
+                  }"
+                  [cdkDragData]="sextantMod"
+                  cdkDrag
+                >
+                  <td>{{ i + 1 }}</td>
+                  <td>{{ sextantMod.chaos }}</td>
+                  <td>{{ sextantMod.name }}</td>
+                  <td>{{ sextantMod.weight }}</td>
+                  <td>{{ sextantMod.normalizedProbability.toFixed(4) }}</td>
+                  <td>{{ sextantMod.normalizedPrice.toFixed(4) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col-md-5 d-flex flex-column">
+          <div
+            style="height: 200px"
+            class=""
+            id="blockedId"
+            cdkDropList
+            [cdkDropListData]="blockedSextantMods"
+            cdkDropListConnectedTo="allId"
+            (cdkDropListDropped)="onDrop($event)"
+            [cdkDropListEnterPredicate]="limitePredicate"
+          >
+            <table class="table table-bordered" data-overlay="true">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Weight</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="let blockedSextantMod of blockedSextantMods"
+                  cdkDrag
+                  [cdkDragData]="blockedSextantMod"
+                >
+                  <td>{{ blockedSextantMod.name }}</td>
+                  <td>{{ blockedSextantMod.weight }}</td>
+                </tr>
+              </tbody>
+              <div class="overlay">Drop mod here to block</div>
+            </table>
+          </div>
+
+          @if(sextantModsCalculated().length) {
+          <div class="card">
+            <div class="card-header">Weights and Profits</div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-8">Total Weight:</div>
+                <div class="col-4">{{ totalWeight() }}</div>
+              </div>
+              <div class="row">
+                <div class="col-8">Total Weighted Value:</div>
+                <div class="col-4">{{ totalWeightValue().toFixed(4) }}</div>
+              </div>
+              <div class="row">
+                <div class="col-8">Profit per click:</div>
+                <div class="col-4">
+                  {{ profitPerClickIncludingCheapMods().toFixed(2) }}
+                </div>
+              </div>
+            </div>
+          </div>
+          } 
+          @if(sextantModsCalculated().length) {
+          <div class="container">
+            <form>
+              <div class="form-group">
+                <div class="row">
+                  <label class="col-8" for="chaosInput">Sextant Price:</label>
+                  <input
+                    name="withFormHtmlNameBecomesRequired"
+                    type="number"
+                    min="0"
+                    class="col-4"
+                    id="chaosInput"
+                    placeholder=""
+                    [(ngModel)]="currentChaosPrice"
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+          } 
+          @if (sextantModsCalculated().length) {
+          <div class="card">
+            <div class="card-header">Weights and Profits with Threshold</div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-8">Total Weighted Value:</div>
+                <div class="col-4">
+                  {{ totalWeightedValueWithThreshold().toFixed(4) }}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-8">Profit per click:</div>
+                <div class="col-4">
+                  {{ profitPerClickNotIncludingCheapMods().toFixed(2) }}
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+          @if (sextantModsCalculated().length) {
+          <div class="container">
+            <form>
+              <div class="form-group">
+                <div class="row">
+                  <label class="col-8" for="chaosInput"
+                    >Cheap Mod Threshold:</label
+                  >
+                  <input
+                    name="anotherRequiredInputName"
+                    type="number"
+                    min="0"
+                    class="col-4"
+                    id="chaosInput"
+                    placeholder=""
+                    [(ngModel)]="userInputThreshold"
+                    (ngModelChange)="onThresholdChange($event)"
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="alert alert-danger" *ngIf="errorMessage()">
+  {{ errorMessage() }}
+</div>
